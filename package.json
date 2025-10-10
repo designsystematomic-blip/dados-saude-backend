@@ -16,7 +16,11 @@
   "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.ts"
+    "dev": "nodemon src/app.ts",
+    "build": "tsc",
+    "docker:service": "docker compose up -d service_dados_saude",
+    "db:deploy": "npx prisma generate && npx prisma migrate deploy",
+    "prisma:g": "npx prisma format && npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",

@@ -1,0 +1,23 @@
+services:
+  service_dados_saude:
+    build: .
+    image: service_dados_saude
+    container_name: service_dados_saude
+    hostname: service_dados_saude
+    restart: always
+    command: node ./build/app.js
+    ports:
+      - 5001:5000
+    env_file:
+      - .env.docker
+  dados_saude_db:
+    image: postgres
+    hostname: dados_saude_db
+    container_name: dados_saude_db
+    restart: always
+    ports:
+      - 5444:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dados_saude_db

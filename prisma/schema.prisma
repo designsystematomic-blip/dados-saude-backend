@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -14,9 +13,133 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BloodType {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  AB_POS
+  AB_NEG
+  O_POS
+  O_NEG
+}
+
+enum Specialty {
+  CARDIOLOGY // Coração (Cardiologia)
+  ENDOCRINOLOGY // Hormônios e diabetes (Endocrinologia)
+  GYNECOLOGY_OBSTETRICS // Saúde da mulher (Ginecologia e Obstetrícia)
+  UROLOGY // Saúde do homem (Urologia)
+  DERMATOLOGY // Pele (Dermatologia)
+  GASTROENTEROLOGY // Estômago e intestino (Gastroenterologia)
+  ORTHOPEDICS_RHEUMATOLOGY // Ossos e articulações (Ortopedia/Reumatologia)
+  NEUROLOGY // Nervos e cérebro (Neurologia)
+  OPHTHALMOLOGY // Olhos (Oftalmologia)
+  OTORHINOLARYNGOLOGY // Ouvido, nariz e garganta (Otorrinolaringologia)
+  PULMONOLOGY // Pulmão (Pneumologia)
+  NEPHROLOGY // Rins (Nefrologia)
+  HEMATOLOGY // Sangue (Hematologia)
+  ONCOLOGY // Câncer (Oncologia)
+  PEDIATRICS // Crianças (Pediatria)
+  PSYCHIATRY_PSYCHOLOGY // Saúde mental (Psiquiatria / Psicologia)
+  GENERAL_CLINIC // Clínico geral
+  OTHER // Outro (especificar)
+}
+
+enum ExamType {
+  BLOOD_TEST // Exame de sangue
+  URINE_TEST // Exame de urina
+  STOOL_TEST // Exame de fezes
+  XRAY // Raio-X
+  ULTRASOUND // Ultrassom
+  CT_SCAN // Tomografia
+  MRI // Ressonância magnética
+  ECG // Eletrocardiograma (ECG)
+  ECHOCARDIOGRAM // Ecocardiograma
+  MAMMOGRAM // Mamografia
+  COLONOSCOPY // Colonoscopia
+  ENDOSCOPY // Endoscopia
+  PAP_SMEAR // Papanicolau
+  OTHER // Outro (especificar)
+}
+
 model User {
-  id       String @id @default(uuid()) @db.VarChar(36)
-  email    String  @unique
-  password String
-  name     String?
+  id                String              @id @default(uuid()) @db.VarChar(36)
+  email             String              @unique
+  phone             String?
+  cpf               String              @unique
+  sex               String?
+  birthDate         DateTime?
+  password          String
+  name              String?
+  socialName        String?
+  bloodType         BloodType? // tipo sanguíneo opcional (0 ou 1)
+  allergies         Allergies[] // 0..N
+  chronicDiseases   ChronicDiseases[] // 0..N
+  medication        Medication[] // 0..N
+  healthPlan        HealthPlan[] // 0..N
+  emergencyContacts EmergencyContacts[] // 0..N
+  Exam              Exam[]
+}
+
+model Allergies {
+  id     String  @id @default(uuid()) @db.VarChar(36)
+  name   String
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.VarChar(36)
+}
+
+model ChronicDiseases {
+  id     String  @id @default(uuid()) @db.VarChar(36)
+  name   String
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.VarChar(36)
+}
+
+model Medication {
+  id            String   @id @default(uuid()) @db.VarChar(36)
+  name          String
+  continuousUse Boolean? // "continuosUse" estava com erro de digitação :)
+  user          User?    @relation(fields: [userId], references: [id])
+  userId        String?  @db.VarChar(36)
+}
+
+model HealthPlan {
+  id     String  @id @default(uuid()) @db.VarChar(36)
+  name   String
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.VarChar(36)
+}
+
+model EmergencyContacts {
+  id              String  @id @default(uuid()) @db.VarChar(36)
+  name            String
+  phone           String?
+  degreeOfKinship String?
+  user            User?   @relation(fields: [userId], references: [id])
+  userId          String? @db.VarChar(36)
+}
+
+model Exam {
+  id           String     @id @default(uuid()) @db.VarChar(36)
+  name         String
+  type         ExamType?
+  date         DateTime
+  specialty    Specialty?
+  file         File[]
+  observations String
+  user         User?      @relation(fields: [userId], references: [id])
+  userId       String?    @db.VarChar(36)
+}
+
+model File {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  filename   String
+  mimeType   String // Ex: "image/png", "application/pdf"
+  size       Int // Em bytes
+  path       String? // Caminho no servidor local (ex: /uploads/file.png)
+  url        String? // URL pública (ex: https://meuapp.com/uploads/file.png)
+  uploadedAt DateTime @default(now())
+
+  Exam   Exam?   @relation(fields: [examId], references: [id])
+  examId String? @db.VarChar(36)
 }

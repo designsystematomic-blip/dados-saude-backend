@@ -4,6 +4,7 @@ import { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes";
+import healthRoutes from "./routes/health.routes";
 // Create the express app and import the type of app from express;
 
 const app: Application = express();
@@ -27,6 +28,8 @@ app.listen(PORT, async () => {
 });
 
 app.use("/users", userRoutes);
+
+app.use("/health", healthRoutes);
 
 app.get("/test", (req, res) => {
   const connString = process.env.DATABASE_URL;
