@@ -33,6 +33,28 @@ export class UserRepository {
     return prisma.user.findUnique({ where: { email } });
   }
 
+  static async findById(id: string) {
+    return prisma.user.findUnique({ 
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        socialName: true,
+        phone: true,
+        cpf: true,
+        sex: true,
+        birthDate: true,
+        bloodType: true,
+        allergies: true,
+        chronicDiseases: true,
+        medication: true,
+        healthPlan: true,
+        emergencyContacts: true,
+        exams: true
+      }
+    });
+  }
+
   static async getAllUsers() {
     return prisma.user.findMany();
   }

@@ -62,6 +62,11 @@ enum ExamType {
   OTHER // Outro (especificar)
 }
 
+model Teste {
+  id                String              @id @default(uuid()) @db.VarChar(36)
+  name String
+}
+
 model User {
   id                String              @id @default(uuid()) @db.VarChar(36)
   email             String              @unique
@@ -78,7 +83,7 @@ model User {
   medication        Medication[] // 0..N
   healthPlan        HealthPlan[] // 0..N
   emergencyContacts EmergencyContacts[] // 0..N
-  Exam              Exam[]
+  exams             Exam[]
 }
 
 model Allergies {
@@ -140,6 +145,6 @@ model File {
   url        String? // URL pública (ex: https://meuapp.com/uploads/file.png)
   uploadedAt DateTime @default(now())
 
-  Exam   Exam?   @relation(fields: [examId], references: [id])
+  exams   Exam?   @relation(fields: [examId], references: [id])
   examId String? @db.VarChar(36)
 }
