@@ -53,7 +53,6 @@ export class UserController {
   }
 
   static async getUnique(req: Request, res: Response) {
-    console.log('body',  req.body)
     try {
 
       const { token } = req.body;

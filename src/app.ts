@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes";
 import healthRoutes from "./routes/health.routes";
+import examRoutes from "./routes/exam.routes";
 // Create the express app and import the type of app from express;
 
 const app: Application = express();
@@ -26,6 +27,8 @@ const PORT: number = 8000;
 app.listen(PORT, async () => {
   console.log(`🗄️ Server Fire on http://localhost:${PORT}/`);
 });
+
+app.use("/exams", examRoutes);
 
 app.use("/users", userRoutes);
 

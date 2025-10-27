@@ -30,11 +30,11 @@ export class UserRepository {
   }
 
   static async findByEmail(email: string) {
-    return prisma.user.findUnique({ where: { email } });
+    return await prisma.user.findUnique({ where: { email } });
   }
 
   static async findById(id: string) {
-    return prisma.user.findUnique({ 
+    return await prisma.user.findUnique({ 
       where: { id },
       select: {
         id: true,
@@ -56,6 +56,6 @@ export class UserRepository {
   }
 
   static async getAllUsers() {
-    return prisma.user.findMany();
+    return await prisma.user.findMany();
   }
 }

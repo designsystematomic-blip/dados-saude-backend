@@ -132,8 +132,8 @@ model Exam {
   specialty    Specialty?
   file         File[]
   observations String
-  user         User?      @relation(fields: [userId], references: [id])
-  userId       String?    @db.VarChar(36)
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String    @db.VarChar(36)
 }
 
 model File {

@@ -1,15 +1,16 @@
+version: '3.8'
+
 services:
-  service_dados_saude:
-    build: .
-    image: service_dados_saude
-    container_name: service_dados_saude
-    hostname: service_dados_saude
-    restart: always
-    command: node ./build/app.js
+  localstack:
+    image: localstack/localstack
+    container_name: localstackS3
     ports:
-      - 5001:5000
-    env_file:
-      - .env.docker
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - GATEWAY_LISTEN=0.0.0.0:4566
+    volumes:
+      - "./localstack:/docker-entrypoint-initaws.d"
   dados_saude_db:
     image: postgres
     hostname: dados_saude_db
