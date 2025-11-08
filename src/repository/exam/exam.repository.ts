@@ -25,9 +25,9 @@ export class ExamRepository {
 		});
   }
 
-	static async findUnique(id: string) {
+	static async findUnique(id: string, userId: string) {
 		return await prisma.exam.findUnique({ 
-			where: { id: id },
+			where: { id: id, userId: userId },
 				include: {
 					file: true,
 					user: {

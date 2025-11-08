@@ -10,7 +10,7 @@ services:
       - SERVICES=s3
       - GATEWAY_LISTEN=0.0.0.0:4566
     volumes:
-      - "./localstack:/docker-entrypoint-initaws.d"
+      - "./localstack_data:/docker-entrypoint-initaws.d"
   dados_saude_db:
     image: postgres
     hostname: dados_saude_db
@@ -22,3 +22,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: dados_saude_db
+    volumes:
+      - dados_saude_db_data:/var/lib/postgresql/data
+
+volumes:
+  dados_saude_db_data:
+    driver: local
+  localstack_data:
+    driver: local

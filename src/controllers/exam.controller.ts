@@ -17,7 +17,6 @@ export class ExamController {
 		return res.json({ result });
 	}
 
-	// Novo método para criar exame com arquivos
 	static async createExamWithFiles(req: Request, res: Response) {
 		try {
 			const { name, date, type, specialty, observations, userId } = req.body;
@@ -61,7 +60,7 @@ export class ExamController {
 			}
 
 			// Buscar o exame criado com os arquivos
-			const examWithFiles = await ExamRepository.findUnique(exam.id);
+			const examWithFiles = await ExamRepository.findUnique(exam.id, userId);
 
 			return res.status(201).json({
 				message: 'Exame criado com sucesso',
@@ -77,7 +76,6 @@ export class ExamController {
 		}
 	}
 
-	// Buscar exames com arquivos de um usuário
 	static async getUserExamsWithFiles(req: Request, res: Response) {
 		try {
 
@@ -99,6 +97,34 @@ export class ExamController {
 
 		} catch (error) {
 			console.error('Error fetching user exams:', error);
+			return res.status(500).json({
+				message: 'Erro interno do servidor',
+				error: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+	}
+
+	static async getExamById(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+
+			const headers = req.headers;
+			const userId = headers['x-user-id'] as string;
+			const exam = await ExamRepository.findUnique(id, userId);
+
+			if (!exam) {
+				return res.status(404).json({
+					message: 'Exame não encontrado'
+				});
+			}
+
+			return res.json({
+				message: 'Exame encontrado',
+				exam
+			});
+
+		} catch (error) {
+			console.error('Error fetching exam by ID:', error);
 			return res.status(500).json({
 				message: 'Erro interno do servidor',
 				error: error instanceof Error ? error.message : 'Unknown error'
@@ -144,6 +170,82 @@ export class ExamController {
 
 		} catch (error) {
 			console.error('Error generating download URL:', error);
+			return res.status(500).json({
+				message: 'Erro interno do servidor',
+				error: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+	}
+
+	// Servir arquivo diretamente via backend
+	static async getFileStream(req: Request, res: Response) {
+		try {
+			const { fileId } = req.params;
+			
+			// Verificar token (pode vir do header ou query)
+			const token = req.headers.authorization?.replace('Bearer ', '') || req.query.token as string;
+			
+			if (!token) {
+				return res.status(401).json({
+					message: 'Token de autorização necessário'
+				});
+			}
+
+			const file = await prisma.file.findUnique({
+				where: { id: fileId }
+			});
+
+			if (!file || !file.path) {
+				return res.status(404).json({
+					message: 'Arquivo não encontrado'
+				});
+			}
+
+			const bucketName = process.env.S3_BUCKET_NAME;
+			if (!bucketName) {
+				return res.status(500).json({
+					message: 'Bucket S3 não configurado'
+				});
+			}
+
+			const command = new GetObjectCommand({
+				Bucket: bucketName,
+				Key: file.path
+			});
+
+			const s3Response = await s3.send(command);
+
+			if (!s3Response.Body) {
+				return res.status(404).json({
+					message: 'Arquivo não encontrado no S3'
+				});
+			}
+
+			// Configurar headers apropriados
+			res.setHeader('Content-Type', file.mimeType);
+			res.setHeader('Content-Disposition', `inline; filename="${file.filename}"`);
+			res.setHeader('Cache-Control', 'public, max-age=3600');
+
+			// Stream do arquivo
+			const stream = s3Response.Body as any;
+			
+			if (stream && typeof stream.pipe === 'function') {
+				// Para Node.js Readable stream
+				stream.pipe(res);
+			} else {
+				// Para outros tipos de Body (como Uint8Array)
+				const bodyContents = await s3Response.Body?.transformToByteArray();
+				if (bodyContents) {
+					res.send(Buffer.from(bodyContents));
+				} else {
+					return res.status(404).json({
+						message: 'Conteúdo do arquivo não encontrado'
+					});
+				}
+			}
+
+		} catch (error) {
+			console.error('Error streaming file:', error);
 			return res.status(500).json({
 				message: 'Erro interno do servidor',
 				error: error instanceof Error ? error.message : 'Unknown error'
