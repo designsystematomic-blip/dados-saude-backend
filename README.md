@@ -37,6 +37,7 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
 | **Docker**     | -        | Containerização                 |
 | **CORS**       | -        | Compartilhamento de recursos    |
 | **dotenv**     | -        | Gestão de variáveis de ambiente |
+| **python**     | -        | Para configurar o venv          |
 
 ## 📦 Pré-requisitos
 
@@ -142,6 +143,12 @@ docker-compose down -v
 
 ## 🗄️ Banco de Dados
 
+#### Gerar Prisma Client
+
+```bash
+npx prisma generate
+```
+
 ### Migrations
 
 As migrations gerenciam o versionamento do banco de dados.
@@ -162,12 +169,6 @@ npx prisma migrate status
 
 ```bash
 npx prisma migrate reset
-```
-
-#### Gerar Prisma Client
-
-```bash
-npx prisma generate
 ```
 
 ### Studio Prisma (GUI)
