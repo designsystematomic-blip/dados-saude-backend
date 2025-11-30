@@ -117,6 +117,12 @@ Isso irá:
 - Iniciar o container PostgreSQL na porta 5444
 - Preparar o banco de dados
 
+Caso resulte em algum erro de permissão na pasta localstack_data, executar:
+
+```bash
+chmod 755 localstack_data
+```
+
 ### Build da imagem Docker
 
 ```bash
