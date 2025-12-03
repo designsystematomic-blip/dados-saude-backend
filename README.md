@@ -6,6 +6,7 @@ Back-end construído para o front-end Dados Saúde durante o projeto de conclus�
 
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Tecnologias](#tecnologias)
+- [Arquitetura do banco de dados](arquitetura)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
 - [Configuração do Ambiente](#configuração-do-ambiente)
@@ -21,6 +22,11 @@ Back-end construído para o front-end Dados Saúde durante o projeto de conclus�
 ## Sobre o Projeto
 
 Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúde, implementando autenticação JWT e integração com banco de dados PostgreSQL via Prisma ORM.
+
+## Arquitetura
+
+![alt text](prisma-uml.png)
+
 
 ## 🛠️ Tecnologias
 
@@ -46,25 +52,46 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
 - **Docker** e **Docker Compose** (para execução containerizada)
 - **Git** para versionamento
 
+
+## Links para instalação dos pacotes pré-requisito
+
+- **Node.js** e **npm** v20.19.4 ou superior
+
+  - Windows - [NodeJS Download](https://nodejs.org/en/download)
+  - Mac - ``` brew install node@24 ```
+  - Linux/ubuntu  - ``` brew install node@24 ```
+
+- **Docker** e **Docker Compose** (para execução containerizada)
+
+  - Windows - [utilizar Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/)
+  - Mac - [Docker Engine](https://formulae.brew.sh/formula/docker)
+  - Linux/ubuntu - [Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
+
+
+- **Git** para versionamento
+  - Windows - https://git-scm.com/install/windows
+  - Mac - https://git-scm.com/install/mac
+  - Linux/ubuntu - https://git-scm.com/install/linux
+
+- **python**
+  - Windows - https://www.python.org/downloads/windows/
+  - Mac - https://www.python.org/downloads/macos/
+  - Linux/ubuntu - https://www.python.org/downloads/source/
+
+
 ## 🚀 Instalação
 
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/dados-saude-backend.git
-cd dados-saude-backend
+git clone https://github.com/designsystematomic-blip/dados-saude-backend
+cd ./dados-saude-backend 
 ```
 
 ### 2. Instalar dependências
 
 ```bash
 npm install
-```
-
-### 3. Instalar dependências de desenvolvimento
-
-```bash
-npm install -D
 ```
 
 ## ⚙️ Configuração do Ambiente
@@ -77,7 +104,117 @@ npm install -D
 cp .env.example .env
 ```
 
-2. Configure as variáveis conforme seu ambiente (desenvolvimento, teste, produção):
+### 2. ** 🐳 Inicializando o Docker**
+
+- Inicialize o docker 
+- Na raiz do projeto, rodar o comando ```docker compose up -d ```
+
+### 3. Configurando a AWS CLI
+
+Será utilizado o localstack para configurar o S3 Bucket da AWS localmente, esse serviço permite o armazenamento de imagens em um storage e disponibiliza as URLs da imagem, o que é mais recomendado para lidar do que realizar a subida dos arquivos diretamente no banco de dados Postgres.  Documentação referencia para o processo de subida de arquivos: https://github.com/dockersamples/todo-list-localstack-docker 
+
+
+#### 3.1 Criando um ambiente virtual (Mac ou Linux):
+
+    python3 -m venv .venv
+
+#### 3.1.2. Ativar o ambiente virtual:
+
+		source .venv/bin/activate
+
+#### 3.1.3 Instalando a aws cli Para instalar:
+
+		pip3 install awscli-local
+
+#### 3.1.4 Verificando a instalação
+
+		awslocal --version
+
+Sempre que for trabalhar com o projeto, é necessário ativar o ambiente virtual primeiro usando:
+
+	  source .venv/bin/activate
+
+#### 3.1.5. Configurar a awslocal
+
+    awslocal configure
+
+Configurar os valores solicitados como:
+
+- AWS Access Key ID: test
+- AWS Secret Access Key: test
+- Default region name: us-east-1
+
+#### 3.2 Criando um ambiente virtual (Windows):
+
+
+    python -m venv .venv
+
+#### 3.1.2. Ativar o ambiente virtual:
+
+    source .venv/Source/bin/activate
+
+#### 3.1.3 Instalando a aws cli Para instalar:
+
+    pip3 install awscli
+
+#### 3.1.4 Verificando a instalação
+
+		aws --version
+
+Sempre que for trabalhar com o projeto, é necessário ativar o ambiente virtual primeiro usando:
+
+			source .venv/bin/activate
+
+#### 3.1.5. Configurar a awslocal
+
+      aws configure
+
+Configurar os valores solicitados como:
+
+- AWS Access Key ID: test
+- AWS Secret Access Key: test
+- Default region name: us-east-1
+
+
+#### 4. Criando o S3 bucket 
+
+Uma vez que a CLI da AWS está instalada e configurada, assim como o docker inicializado, para criar o bucket basta seguir:
+
+##### 4.1 Criando o S3 bucket para Linux ou Mac
+
+
+			awslocal s3 mb s3://dados-saude-bucket-exames
+
+ 
+##### 4.2 Criando o S3 bucket para Windows
+
+
+			aws s3 mb s3://dados-saude-bucket-exames
+
+##### 4.3 Verificar se o bucket foi criado para Linux ou Mac
+
+			awslocal s3 ls
+
+
+##### 4.4 Verificar se o bucket foi criado para Windows
+
+			aws s3 ls
+
+Caso tenha erro de permissão ao rodar o docker. Para dar permissão para criar o volume da localstack
+
+			mkdir -p localstack && chmod 755 localstack
+
+5. Configure as variáveis conforme seu ambiente (desenvolvimento, teste, produção):
+
+5.1 Gere uma chave de segurança criptografada para a variável JWT_SECRET
+
+Você pode gerar uma chave secreta forte usando o comando abaixo:
+
+```
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+Arquivo .env
 
 ```env
 # Banco de Dados
@@ -97,6 +234,42 @@ AWS_ACCESS_KEY_ID="sua-chave-id"
 AWS_SECRET_ACCESS_KEY="sua-chave-secreta"
 AWS_S3_BUCKET_NAME="seu-bucket-name"
 ```
+
+### 6. 🗄️ Inicializando o banco de dados
+
+#### 6.1 Gerar Prisma Client
+
+```bash
+npx prisma generate
+```
+
+#### 6.2 Migrations
+
+As migrations gerenciam o versionamento do banco de dados.
+
+#### 6.3 Executar migrations pendentes
+
+```bash
+npx prisma migrate dev
+```
+
+#### 6.4 Verificar os dados do banco via interface 
+
+```bash
+npx prisma studio
+```
+
+## 7. 🏃 Executando o Projeto
+
+### Modo desenvolvimento (com reload automático)
+
+```bash
+npm run dev
+```
+
+O servidor estará disponível em: `http://localhost:8000`
+
+## Outras informações sobre Docker e o banco de dados
 
 ### Diferentes ambientes
 
@@ -187,28 +360,6 @@ npx prisma studio
 
 Acesse: `http://localhost:5555`
 
-## 🏃 Executando o Projeto
-
-### Modo desenvolvimento (com reload automático)
-
-```bash
-npm run dev
-```
-
-O servidor estará disponível em: `http://localhost:8000`
-
-### Modo produção
-
-```bash
-npm run build
-npm run start
-```
-
-### Rodar testes
-
-```bash
-npm test
-```
 
 ## 📁 Estrutura do Projeto
 
@@ -556,10 +707,10 @@ npx prisma migrate dev
 
 Este projeto é parte do projeto de conclusão de pós-graduação do IFBA.
 
-## 👥 Contribuidores
+## 👥 Dúvidas?
 
-- Amanda Prates
+ amandaprates1997@gmail.com
 
----
 
-**Última atualização**: janeiro de 2025
+
+
