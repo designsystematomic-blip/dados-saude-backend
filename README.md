@@ -27,7 +27,6 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
 
 ![alt text](prisma-uml.png)
 
-
 ## 🛠️ Tecnologias
 
 | Tecnologia     | Versão   | Propósito                       |
@@ -52,14 +51,13 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
 - **Docker** e **Docker Compose** (para execução containerizada)
 - **Git** para versionamento
 
-
 ## Links para instalação dos pacotes pré-requisito
 
 - **Node.js** e **npm** v20.19.4 ou superior
 
   - Windows - [NodeJS Download](https://nodejs.org/en/download)
-  - Mac - ``` brew install node@24 ```
-  - Linux/ubuntu  - ``` brew install node@24 ```
+  - Mac - `brew install node@24`
+  - Linux/ubuntu - `brew install node@24`
 
 - **Docker** e **Docker Compose** (para execução containerizada)
 
@@ -67,8 +65,8 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
   - Mac - [Docker Engine](https://formulae.brew.sh/formula/docker)
   - Linux/ubuntu - [Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
 
-
 - **Git** para versionamento
+
   - Windows - https://git-scm.com/install/windows
   - Mac - https://git-scm.com/install/mac
   - Linux/ubuntu - https://git-scm.com/install/linux
@@ -78,14 +76,13 @@ Backend RESTful desenvolvido com Node.js e Express para gerenciar dados de saúd
   - Mac - https://www.python.org/downloads/macos/
   - Linux/ubuntu - https://www.python.org/downloads/source/
 
-
 ## 🚀 Instalação
 
 ### 1. Clonar o repositório
 
 ```bash
 git clone https://github.com/designsystematomic-blip/dados-saude-backend
-cd ./dados-saude-backend 
+cd ./dados-saude-backend
 ```
 
 ### 2. Instalar dependências
@@ -104,15 +101,14 @@ npm install
 cp .env.example .env
 ```
 
-### 2. ** 🐳 Inicializando o Docker**
+### 2. 🐳 Inicializando o Docker
 
-- Inicialize o docker 
-- Na raiz do projeto, rodar o comando ```docker compose up -d ```
+- Inicialize o docker
+- Na raiz do projeto, rodar o comando `docker compose up -d `
 
 ### 3. Configurando a AWS CLI
 
-Será utilizado o localstack para configurar o S3 Bucket da AWS localmente, esse serviço permite o armazenamento de imagens em um storage e disponibiliza as URLs da imagem, o que é mais recomendado para lidar do que realizar a subida dos arquivos diretamente no banco de dados Postgres.  Documentação referencia para o processo de subida de arquivos: https://github.com/dockersamples/todo-list-localstack-docker 
-
+Será utilizado o localstack para configurar o S3 Bucket da AWS localmente, esse serviço permite o armazenamento de imagens em um storage e disponibiliza as URLs da imagem, o que é mais recomendado para lidar do que realizar a subida dos arquivos diretamente no banco de dados Postgres. Documentação referencia para o processo de subida de arquivos: https://github.com/dockersamples/todo-list-localstack-docker
 
 #### 3.1 Criando um ambiente virtual (Mac ou Linux):
 
@@ -120,19 +116,19 @@ Será utilizado o localstack para configurar o S3 Bucket da AWS localmente, esse
 
 #### 3.1.2. Ativar o ambiente virtual:
 
-		source .venv/bin/activate
+    	source .venv/bin/activate
 
 #### 3.1.3 Instalando a aws cli Para instalar:
 
-		pip3 install awscli-local
+    	pip3 install awscli-local
 
 #### 3.1.4 Verificando a instalação
 
-		awslocal --version
+    	awslocal --version
 
 Sempre que for trabalhar com o projeto, é necessário ativar o ambiente virtual primeiro usando:
 
-	  source .venv/bin/activate
+      source .venv/bin/activate
 
 #### 3.1.5. Configurar a awslocal
 
@@ -146,24 +142,23 @@ Configurar os valores solicitados como:
 
 #### 3.2 Criando um ambiente virtual (Windows):
 
-
     python -m venv .venv
 
 #### 3.1.2. Ativar o ambiente virtual:
 
-    source .venv/Source/bin/activate
+    .venv\Scripts\activate
 
 #### 3.1.3 Instalando a aws cli Para instalar:
 
-    pip3 install awscli
+    pip install awscli
 
 #### 3.1.4 Verificando a instalação
 
-		aws --version
+    	aws --version
 
 Sempre que for trabalhar com o projeto, é necessário ativar o ambiente virtual primeiro usando:
 
-			source .venv/bin/activate
+    	.venv\Scripts\activate
 
 #### 3.1.5. Configurar a awslocal
 
@@ -175,34 +170,29 @@ Configurar os valores solicitados como:
 - AWS Secret Access Key: test
 - Default region name: us-east-1
 
-
-#### 4. Criando o S3 bucket 
+#### 4. Criando o S3 bucket
 
 Uma vez que a CLI da AWS está instalada e configurada, assim como o docker inicializado, para criar o bucket basta seguir:
 
 ##### 4.1 Criando o S3 bucket para Linux ou Mac
 
+    		awslocal s3 mb s3://dados-saude-bucket-exames
 
-			awslocal s3 mb s3://dados-saude-bucket-exames
-
- 
 ##### 4.2 Criando o S3 bucket para Windows
 
-
-			aws s3 mb s3://dados-saude-bucket-exames
+    		aws s3 mb s3://dados-saude-bucket-exames --endpoint-url=http://localhost:4566
 
 ##### 4.3 Verificar se o bucket foi criado para Linux ou Mac
 
-			awslocal s3 ls
-
+    		awslocal s3 ls
 
 ##### 4.4 Verificar se o bucket foi criado para Windows
 
-			aws s3 ls
+    		aws s3 ls
 
 Caso tenha erro de permissão ao rodar o docker. Para dar permissão para criar o volume da localstack
 
-			mkdir -p localstack && chmod 755 localstack
+    		mkdir -p localstack && chmod 755 localstack
 
 5. Configure as variáveis conforme seu ambiente (desenvolvimento, teste, produção):
 
@@ -253,7 +243,7 @@ As migrations gerenciam o versionamento do banco de dados.
 npx prisma migrate dev
 ```
 
-#### 6.4 Verificar os dados do banco via interface 
+#### 6.4 Verificar os dados do banco via interface
 
 ```bash
 npx prisma studio
@@ -359,7 +349,6 @@ npx prisma studio
 ```
 
 Acesse: `http://localhost:5555`
-
 
 ## 📁 Estrutura do Projeto
 
@@ -709,8 +698,4 @@ Este projeto é parte do projeto de conclusão de pós-graduação do IFBA.
 
 ## 👥 Dúvidas?
 
- amandaprates1997@gmail.com
-
-
-
-
+amandaprates1997@gmail.com

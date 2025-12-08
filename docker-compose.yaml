@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   localstack:
@@ -9,8 +9,11 @@ services:
     environment:
       - SERVICES=s3
       - GATEWAY_LISTEN=0.0.0.0:4566
+      - PERSISTENCE=1
     volumes:
-      - "./localstack_data:/docker-entrypoint-initaws.d"
+      - localstack_data:/var/lib/localstack
+      - ./init:/docker-entrypoint-initaws.d
+
   dados_saude_db:
     image: postgres
     hostname: dados_saude_db
@@ -27,6 +30,4 @@ services:
 
 volumes:
   dados_saude_db_data:
-    driver: local
   localstack_data:
-    driver: local
