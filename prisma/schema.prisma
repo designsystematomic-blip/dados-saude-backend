@@ -134,6 +134,7 @@ model Exam {
   observations String
   user         User     @relation(fields: [userId], references: [id])
   userId       String    @db.VarChar(36)
+  createdAt    DateTime  @default(now())
 }
 
 model File {

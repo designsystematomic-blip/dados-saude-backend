@@ -223,7 +223,9 @@ export class ExamController {
 
 			// Configurar headers apropriados
 			res.setHeader('Content-Type', file.mimeType);
-			res.setHeader('Content-Disposition', `inline; filename="${file.filename}"`);
+			// Encode do filename para suportar caracteres especiais (RFC 5987)
+			const encodedFilename = encodeURIComponent(file.filename).replace(/['()]/g, escape);
+			res.setHeader('Content-Disposition', `inline; filename="${file.filename}"; filename*=UTF-8''${encodedFilename}`);
 			res.setHeader('Cache-Control', 'public, max-age=3600');
 
 			// Stream do arquivo

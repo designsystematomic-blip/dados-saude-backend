@@ -16,7 +16,9 @@ const examUpload = multer({
       // Organizar por usuário e data
       const userId = (req as any).body?.userId || 'unknown';
       const timestamp = Date.now();
-      const fileName = `exams/${userId}/${timestamp}-${file.originalname}`;
+      // Encode do nome do arquivo para lidar com caracteres especiais
+      const encodedFilename = encodeURIComponent(file.originalname);
+      const fileName = `exams/${userId}/${timestamp}-${encodedFilename}`;
       cb(null, fileName);
     },
   }),
