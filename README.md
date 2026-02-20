@@ -1,6 +1,5 @@
 # Dados Saúde - Backend
 
-Back-end construído para o front-end Dados Saúde durante o projeto de conclusão da pós-graduação do curso Desenvolvimento Web no IFBA Vitória da Conquista - Bahia, turma 2024.2.
 
 ## 📋 Índice
 
@@ -694,8 +693,4 @@ npx prisma migrate dev
 
 ## 📝 Licença
 
-Este projeto é parte do projeto de conclusão de pós-graduação do IFBA.
-
-## 👥 Dúvidas?
-
-amandaprates1997@gmail.com
+MIT
